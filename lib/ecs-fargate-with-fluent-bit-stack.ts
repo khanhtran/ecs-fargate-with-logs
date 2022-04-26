@@ -8,40 +8,29 @@ import { join } from 'path';
 import { AwsLogDriver, FirelensConfigFileType, FirelensLogRouterType, LogDrivers } from '@aws-cdk/aws-ecs';
 import { ServicePrincipal } from '@aws-cdk/aws-iam';
 
-export class EcsFargateWithLogsStack extends cdk.Stack {
+export class EcsFargateWithFluentBit extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
-
-    // firelens image for extra configurations
-    // DockerImageCode.fromImageAsset(join(__dirname, '../firelens')),
-    // the cluster with task definition
-    // const vpc = Vpc.fromLookup(this, "kxt29-vpc", { vpcId: 'vpc-0b163940bddf70a43' })
-
+    
+    const vpc = Vpc.fromLookup(this, "kxt29-vpc", { vpcId: 'vpc-0b163940bddf70a43' })
     const cluster = new ecs.Cluster(this, "kxt29-Cluster", {
-    //   vpc: vpc
+      vpc: vpc
     });
 
-
-    // Create a load-balanced Fargate service
+    
     new ecs.FargateService(this, "kxt29-FargateService", {
-      cluster: cluster, // Required
+      cluster: cluster,
       taskDefinition: this.createTaskDefinition()
     });
   }
 
+
   createTaskDefinition(): ecs.FargateTaskDefinition {
-
-    // define task definition
     const fargateTaskDefinition = new ecs.FargateTaskDefinition(this, 'TaskDef', {
+      executionRole: this.createExecutionRole(),
       taskRole: this.createTaskRole()
-      // volumes : [
-      //   {
-      //     name : "var-log"
-      //   }
-      // ]
     });
-
-    // the side car container
+    
     fargateTaskDefinition.addFirelensLogRouter('log-router', {
       image: ecs.ContainerImage.fromAsset(join(__dirname, '../aws-for-fluent-bit')),
       essential: true,
@@ -53,33 +42,30 @@ export class EcsFargateWithLogsStack extends cdk.Stack {
         }
       },
       memoryReservationMiB: 50,
-      logging: new AwsLogDriver({ streamPrefix: 'firelens' })
+      logging: new AwsLogDriver({ streamPrefix: 'fluentbit'})
     });
-
-    // the main container
-    fargateTaskDefinition.addContainer('app', {
-      // Use an image from DockerHub
+    
+    fargateTaskDefinition.addContainer('medchem-web', {      
       essential: true,
       image: ecs.ContainerImage.fromRegistry("httpd"),
       containerName: 'app',
       logging: LogDrivers.firelens({
         options: {
-          Name: 'cloudwatch',
-          region: 'us-east-2',
-          log_group_name: 'app-loggroup',
-          auto_create_group: 'true',
-          log_stream_name: 'app-stream',
-          'log-driver-buffer-limit': '2097152'
+          // Name: 'cloudwatch',
+          // region: 'us-east-2',
+          // log_group_name: 'app-loggroup',
+          // auto_create_group: 'true',
+          // log_stream_name: 'app-stream',
+          // 'log-driver-buffer-limit': '2097152'
         }
-      })
-      // logging: new AwsLogDriver({ streamPrefix: 'app-aws-logdriver' })
+      })      
     });
 
     return fargateTaskDefinition
   }
 
   createTaskRole(): iam.IRole {
-    return new iam.Role(this, 'Role', {
+    return new iam.Role(this, 'TaskRole', {
       assumedBy: new ServicePrincipal('ecs-tasks.amazonaws.com'),
       roleName: 'cas-ecs-task-role',
       inlinePolicies: {
@@ -98,4 +84,14 @@ export class EcsFargateWithLogsStack extends cdk.Stack {
       }
     });
   }
+
+  createExecutionRole(): iam.Role {
+    return new iam.Role(this, 'ExecutionRole', {
+      assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
+      roleName: 'cas-ecs-execution-role',
+      managedPolicies: [
+        iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AmazonECSTaskExecutionRolePolicy')
+      ]
+    })    
+  } 
 }
