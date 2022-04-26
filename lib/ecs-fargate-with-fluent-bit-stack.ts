@@ -46,7 +46,7 @@ export class EcsFargateWithFluentBit extends cdk.Stack {
     
     fargateTaskDefinition.addContainer('medchem-web', {      
       essential: true,
-      image: ecs.ContainerImage.fromRegistry("httpd"),
+      image: ecs.ContainerImage.fromRegistry("kxtdev/log-demo"),
       containerName: 'medchem-web',
       logging: LogDrivers.firelens({})      
     });
