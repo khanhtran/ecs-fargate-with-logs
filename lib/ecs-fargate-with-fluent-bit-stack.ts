@@ -12,9 +12,9 @@ export class EcsFargateWithFluentBit extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
     
-    const vpc = Vpc.fromLookup(this, "kxt29-vpc", { vpcId: 'vpc-0b163940bddf70a43' })
+    // const vpc = Vpc.fromLookup(this, "kxt29-vpc", { vpcId: 'vpc-0b163940bddf70a43' })
     const cluster = new ecs.Cluster(this, "kxt29-Cluster", {
-      vpc: vpc
+      // vpc: vpc
     });
 
     
@@ -41,24 +41,14 @@ export class EcsFargateWithFluentBit extends cdk.Stack {
           configFileValue: '/extra.conf'
         }
       },
-      memoryReservationMiB: 50,
-      logging: new AwsLogDriver({ streamPrefix: 'fluentbit'})
+      logging: new AwsLogDriver({ streamPrefix: 'fluentbit' })
     });
     
     fargateTaskDefinition.addContainer('medchem-web', {      
       essential: true,
       image: ecs.ContainerImage.fromRegistry("httpd"),
-      containerName: 'app',
-      logging: LogDrivers.firelens({
-        options: {
-          // Name: 'cloudwatch',
-          // region: 'us-east-2',
-          // log_group_name: 'app-loggroup',
-          // auto_create_group: 'true',
-          // log_stream_name: 'app-stream',
-          // 'log-driver-buffer-limit': '2097152'
-        }
-      })      
+      containerName: 'medchem-web',
+      logging: LogDrivers.firelens({})      
     });
 
     return fargateTaskDefinition

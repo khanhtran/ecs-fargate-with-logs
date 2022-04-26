@@ -6,7 +6,7 @@ import { EcsFargateWithFluentBit } from '../lib/ecs-fargate-with-fluent-bit-stac
 
 const app = new cdk.App();
 const env = {
-  account:'746878319868',
+  account:'657641750194',
   region: 'us-east-2'
 }
 const stack = new EcsFargateWithFluentBit(app, 'EcsFargateWithFluentBit', {
@@ -14,5 +14,5 @@ const stack = new EcsFargateWithFluentBit(app, 'EcsFargateWithFluentBit', {
 });
 
 
-const boundary = ManagedPolicy.fromManagedPolicyArn(stack, 'boundary', `arn:aws:iam::${env.account}:policy/cas-infrastructure/permission-boundary-policy`)
-PermissionsBoundary.of(stack).apply(boundary)
+// const boundary = ManagedPolicy.fromManagedPolicyArn(stack, 'boundary', `arn:aws:iam::${env.account}:policy/cas-infrastructure/permission-boundary-policy`)
+// PermissionsBoundary.of(stack).apply(boundary)
