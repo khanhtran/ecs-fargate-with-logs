@@ -3,5 +3,35 @@
     "us-east-2a",
     "us-east-2b",
     "us-east-2c"
-  ]
+  ],
+  "availability-zones:account=746878319868:region=us-east-2": [
+    "us-east-2a",
+    "us-east-2b",
+    "us-east-2c"
+  ],
+  "vpc-provider:account=746878319868:filter.vpc-id=vpc-0b163940bddf70a43:region=us-east-2:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-0b163940bddf70a43",
+    "vpcCidrBlock": "10.187.248.0/24",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Isolated",
+        "type": "Isolated",
+        "subnets": [
+          {
+            "subnetId": "subnet-054d236a0f9fdb364",
+            "cidr": "10.187.248.0/25",
+            "availabilityZone": "us-east-2a",
+            "routeTableId": "rtb-07f6301b460decebc"
+          },
+          {
+            "subnetId": "subnet-0baf1f24c845c5de6",
+            "cidr": "10.187.248.128/25",
+            "availabilityZone": "us-east-2b",
+            "routeTableId": "rtb-07f6301b460decebc"
+          }
+        ]
+      }
+    ]
+  }
 }
