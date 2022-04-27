@@ -2,6 +2,7 @@ import * as cdk from '@aws-cdk/core'
 import * as ec2 from '@aws-cdk/aws-ec2'
 import { SecurityGroup, Vpc } from "@aws-cdk/aws-ec2";
 import * as ecs from '@aws-cdk/aws-ecs'
+import * as ecr from '@aws-cdk/aws-ecr'
 import * as iam from '@aws-cdk/aws-iam'
 import * as ecs_patterns from "@aws-cdk/aws-ecs-patterns"
 import { join } from 'path';
@@ -44,9 +45,11 @@ export class EcsFargateWithFluentBit extends cdk.Stack {
       logging: new AwsLogDriver({ streamPrefix: 'fluentbit' })
     });
     
+    const ecrRepo = ecr.Repository.fromRepositoryName(this, 'my-repo', 'amazon-ecs-sample');
+
     fargateTaskDefinition.addContainer('medchem-web', {      
       essential: true,
-      image: ecs.ContainerImage.fromRegistry("kxtdev/log-demo"),
+      image: ecs.ContainerImage.fromEcrRepository(ecrRepo, 'latest'),
       containerName: 'medchem-web',
       logging: LogDrivers.firelens({})      
     });
