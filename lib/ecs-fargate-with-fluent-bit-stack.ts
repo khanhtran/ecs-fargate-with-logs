@@ -47,11 +47,10 @@ export class EcsFargateWithFluentBit extends cdk.Stack {
     
     const ecrRepo = ecr.Repository.fromRepositoryName(this, 'my-repo', 'amazon-ecs-sample');
 
-    fargateTaskDefinition.addContainer('medchem-web', {      
+    fargateTaskDefinition.addContainer('app', {      
       essential: true,
-      image: ecs.ContainerImage.fromEcrRepository(ecrRepo, 'latest'),
-      containerName: 'medchem-web',
-      logging: LogDrivers.firelens({})      
+      image:ecs.ContainerImage.fromRegistry('793726277289.dkr.ecr.us-east-2.amazonaws.com/log-demo:v1'),
+      logging: LogDrivers.firelens({})
     });
 
     return fargateTaskDefinition
