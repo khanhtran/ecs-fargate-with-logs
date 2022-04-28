@@ -45,9 +45,7 @@ export class EcsFargateWithFluentBit extends cdk.Stack {
       logging: new AwsLogDriver({ streamPrefix: 'fluentbit' })
     });
     
-    const ecrRepo = ecr.Repository.fromRepositoryName(this, 'my-repo', 'amazon-ecs-sample');
-
-    fargateTaskDefinition.addContainer('app', {      
+    fargateTaskDefinition.addContainer('app', {
       essential: true,
       image:ecs.ContainerImage.fromRegistry('793726277289.dkr.ecr.us-east-2.amazonaws.com/log-demo:v1'),
       logging: LogDrivers.firelens({})
