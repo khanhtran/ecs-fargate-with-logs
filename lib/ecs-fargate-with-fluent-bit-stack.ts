@@ -2,6 +2,7 @@ import * as cdk from '@aws-cdk/core'
 import * as ec2 from '@aws-cdk/aws-ec2'
 import { SecurityGroup, Vpc } from "@aws-cdk/aws-ec2";
 import * as ecs from '@aws-cdk/aws-ecs'
+import * as ecr from '@aws-cdk/aws-ecr'
 import * as iam from '@aws-cdk/aws-iam'
 import * as ecs_patterns from "@aws-cdk/aws-ecs-patterns"
 import { join } from 'path';
@@ -42,11 +43,18 @@ export class EcsFargateWithFluentBit extends cdk.Stack {
       },
       logging: new AwsLogDriver({ streamPrefix: 'fluentbit' })
     });
+<<<<<<< HEAD
 
     fargateTaskDefinition.addContainer('web-container', {
       essential: true,
       image: ecs.ContainerImage.fromRegistry("kxtdev/docker-spring-boot"),
       containerName: 'web-container',
+=======
+    
+    fargateTaskDefinition.addContainer('app', {
+      essential: true,
+      image:ecs.ContainerImage.fromRegistry('793726277289.dkr.ecr.us-east-2.amazonaws.com/log-demo:v1'),
+>>>>>>> 4ccc23e5b0379d4d30170fbde6c4027070a8a04c
       logging: LogDrivers.firelens({})
     });
 
