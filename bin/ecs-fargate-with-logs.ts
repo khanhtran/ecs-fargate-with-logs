@@ -6,7 +6,7 @@ import { EcsFargateWithFluentBit } from '../lib/ecs-fargate-with-fluent-bit-stac
 
 const app = new cdk.App();
 const env = {
-  account:'793726277289',
+  account:'657641750194',
   region: 'us-east-2'
 }
 const stack = new EcsFargateWithFluentBit(app, 'EcsFargateWithFluentBit', {

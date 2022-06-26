@@ -34,7 +34,6 @@
       }
     ]
   },
-<<<<<<< HEAD
   "vpc-provider:account=657641750194:filter.vpc-id=vpc-08c2823dcb6dbb95a:region=us-east-2:returnAsymmetricSubnets=true": {
     "vpcId": "vpc-08c2823dcb6dbb95a",
     "vpcCidrBlock": "10.0.0.0/16",
@@ -53,12 +52,10 @@
         ]
       }
     ]
-  }
-=======
+  },
   "availability-zones:account=793726277289:region=us-east-2": [
     "us-east-2a",
     "us-east-2b",
     "us-east-2c"
   ]
->>>>>>> 4ccc23e5b0379d4d30170fbde6c4027070a8a04c
 }
