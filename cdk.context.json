@@ -33,5 +33,24 @@
         ]
       }
     ]
+  },
+  "vpc-provider:account=657641750194:filter.vpc-id=vpc-08c2823dcb6dbb95a:region=us-east-2:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-08c2823dcb6dbb95a",
+    "vpcCidrBlock": "10.0.0.0/16",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "app-public-subnet",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-06c5192ed35f92b1e",
+            "cidr": "10.0.0.0/24",
+            "availabilityZone": "us-east-2a",
+            "routeTableId": "rtb-0ec0a5a0cfa32c763"
+          }
+        ]
+      }
+    ]
   }
 }

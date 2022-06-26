@@ -11,13 +11,12 @@ import { ServicePrincipal } from '@aws-cdk/aws-iam';
 export class EcsFargateWithFluentBit extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
-    
-    // const vpc = Vpc.fromLookup(this, "kxt29-vpc", { vpcId: 'vpc-0b163940bddf70a43' })
+
+    // const vpc = Vpc.fromLookup(this, "app-vpc", { vpcId: 'vpc-08c2823dcb6dbb95a' })
     const cluster = new ecs.Cluster(this, "kxt29-Cluster", {
       // vpc: vpc
     });
 
-    
     new ecs.FargateService(this, "kxt29-FargateService", {
       cluster: cluster,
       taskDefinition: this.createTaskDefinition()
@@ -30,25 +29,25 @@ export class EcsFargateWithFluentBit extends cdk.Stack {
       executionRole: this.createExecutionRole(),
       taskRole: this.createTaskRole()
     });
-    
+
     fargateTaskDefinition.addFirelensLogRouter('log-router', {
       image: ecs.ContainerImage.fromAsset(join(__dirname, '../aws-for-fluent-bit')),
       essential: true,
       firelensConfig: {
         type: FirelensLogRouterType.FLUENTBIT,
-        options: {              
-          configFileType: FirelensConfigFileType.FILE,              
+        options: {
+          configFileType: FirelensConfigFileType.FILE,
           configFileValue: '/extra.conf'
         }
       },
       logging: new AwsLogDriver({ streamPrefix: 'fluentbit' })
     });
-    
-    fargateTaskDefinition.addContainer('medchem-web', {      
+
+    fargateTaskDefinition.addContainer('web-container', {
       essential: true,
-      image: ecs.ContainerImage.fromRegistry("kxtdev/log-demo"),
-      containerName: 'medchem-web',
-      logging: LogDrivers.firelens({})      
+      image: ecs.ContainerImage.fromRegistry("kxtdev/docker-spring-boot"),
+      containerName: 'web-container',
+      logging: LogDrivers.firelens({})
     });
 
     return fargateTaskDefinition
@@ -57,7 +56,7 @@ export class EcsFargateWithFluentBit extends cdk.Stack {
   createTaskRole(): iam.IRole {
     return new iam.Role(this, 'TaskRole', {
       assumedBy: new ServicePrincipal('ecs-tasks.amazonaws.com'),
-      roleName: 'cas-ecs-task-role',
+      roleName: 'ecs-task-role',
       inlinePolicies: {
         'task-policy': new iam.PolicyDocument({
           statements: [new iam.PolicyStatement({
@@ -82,6 +81,6 @@ export class EcsFargateWithFluentBit extends cdk.Stack {
       managedPolicies: [
         iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AmazonECSTaskExecutionRolePolicy')
       ]
-    })    
-  } 
+    })
+  }
 }
